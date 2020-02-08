@@ -55,8 +55,8 @@ function Translate_MAC2IME() {
     for (var i = 6; i < input_lines.length - 5; i += 6) {
         input_phrase = input_lines[i].split("\t");
         input_shortcut = input_lines[i + 2].split("\t");
-        output_phrase = input_phrase[1].substr(8, input_phrase[1].length - 17);
-        output_shortcut = input_shortcut[1].substr(8, input_shortcut[1].length - 17);
+        output_phrase = input_phrase[2].substr(8, input_phrase[2].length - 17);
+        output_shortcut = input_shortcut[2].substr(8, input_shortcut[2].length - 17);
 
         if (!CheckNGWordsContainInSentence(output_phrase + output_shortcut)) {
             output_line += output_shortcut + "\t" + output_phrase + "\t名詞\t\n";
