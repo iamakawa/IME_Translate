@@ -8,12 +8,41 @@ const plist_format_pos =
     "</plist>";
 
 const INPUT_FORM_POS = 0;
-const OUTPUT_FORM_POS = 4;
+const OUTPUT_FORM_POS = 5;
+var reg = /(.*)(?:\.([^.]+$))/;
+
+// 場所の設定
+var element = document.getElementsByName("translate_select");
+var IME2MAC_sw = document.translate_form[1].checked;
+var MAC2IME_sw = document.translate_form[2].checked;
+var input_form = document.translate_form[INPUT_FORM_POS];
+var output_form = document.translate_form[OUTPUT_FORM_POS];
+
+var selfile_obj = document.getElementById("selfile");
+
+selfile_obj.addEventListener("change", function(evt) {
+    var file = evt.target.files;
+    var fileName = file[0].name;
+
+    var reader = new FileReader();
+
+
+    if (fileName.toLowerCase().match(/\.(txt)$/i)) {
+        element[0].checked = true;
+    } else if (fileName.toLowerCase().match(/\.(plist)$/i)) {
+        element[1].checked = true;
+    } else {
+        return;
+    }
+    reader.readAsText(file[0]);
+    reader.onload = function(ev) {
+        input_form.value = reader.result;
+    }
+}, false);
 
 function Translate() {
-    // 値を取得
-    const IME2MAC_sw = document.translate_form[1].checked;
-    const MAC2IME_sw = document.translate_form[2].checked;
+    var IME2MAC_sw = document.translate_form[1].checked;
+    var MAC2IME_sw = document.translate_form[2].checked;
     if (IME2MAC_sw) {
         Translate_IME2MAC();
     } else if (MAC2IME_sw) {
@@ -24,21 +53,18 @@ function Translate() {
 }
 
 function Translate_IME2MAC() {
-    const input_form = document.translate_form[INPUT_FORM_POS];
-    const output_form = document.translate_form[OUTPUT_FORM_POS];
-
     input_lines = input_form.value.split("\n");
     output_line = "";
     for (var i = 0; i < input_lines.length; i++) {
         if (CountSeqInSentence(input_lines[i], "\t") >= 2) {
             input_words = input_lines[i].split("\t");
             if (!CheckNGWordsContainInSentence(input_words[0] + input_words[1])) {
-                output_line += "<dict>" +
-                    "<key>phrase</key>" +
-                    "<string>" + input_words[1] + "</string>" +
-                    "<key>shortcut</key>" +
-                    "<string>" + input_words[0] + "</string>" +
-                    "</dict>" + "\n";
+                output_line += "\t<dict>\n" +
+                    "\t\t<key>phrase</key>\n" +
+                    "\t\t<string>" + input_words[1] + "</string>\n" +
+                    "\t\t<key>shortcut</key>\n" +
+                    "\t\t<string>" + input_words[0] + "</string>\n" +
+                    "\t</dict>" + "\n";
             }
         }
     }
@@ -46,9 +72,6 @@ function Translate_IME2MAC() {
 }
 
 function Translate_MAC2IME() {
-    const input_form = document.translate_form[INPUT_FORM_POS];
-    const output_form = document.translate_form[OUTPUT_FORM_POS];
-
     input_lines = input_form.value.split("\n");
     output_line = "";
 
@@ -79,4 +102,28 @@ function CheckNGWordsContainInSentence(str) {
 
 function CountSeqInSentence(str, seq) {
     return (str.split(seq).length - 1);
+}
+
+function Export() {
+    var IME2MAC_sw = document.translate_form[1].checked;
+    var MAC2IME_sw = document.translate_form[2].checked;
+    if (IME2MAC_sw) {
+        var blob = new Blob(["\uFFFF", output_form.value]);
+        var fileName = "output.plist";
+    } else if (MAC2IME_sw) {
+        var blob = new Blob(["\uFFFF", output_form.value]);
+        var fileName = "output.txt";
+    } else {
+        alert("please select translate section");
+        return;
+    }
+    if (window.navigator.msSaveBlob) {
+        window.navigator.msSaveBlob(blob, fileName);
+        // msSaveOrOpenBlobの場合はファイルを保存せずに開ける
+        window.navigator.msSaveOrOpenBlob(blob, fileName);
+    } else {
+        var export_block = document.getElementById("export")
+        export_block.download = fileName;
+        export_block.href = window.URL.createObjectURL(blob);
+    }
 }

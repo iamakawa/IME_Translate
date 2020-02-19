@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <script type="text/javascript" src="translate.js"></script>
     <link rel="stylesheet" type="text/css" href="style.css">
     <title>Translate</title>
 </head>
@@ -39,20 +38,24 @@
             <div id="button_container">
                 <input type="button" name="submit" value="translate" onclick="Translate()" />
             </div>
-            <!--
-                    <div id="file_container">
-                        <input type="file" id="files" name="files[]" multiple />
-                    </div>
-            -->
+
+            <div id="file_container">
+                <input type="file" id="selfile" />
+            </div>
 
             <div class="text_area" id="after_form">
                 <h3>変換後</h3>
-                <textarea class="textform" rows="20" onfocus="this.select();"></textarea>
+                <textarea class="textform" rows="20" onfocus="this.select();" readonly></textarea>
+            </div>
+
+            <div id="export_container">
+                <a id="export" href="#" download="#" onclick="Export()">ダウンロード</a>
             </div>
 
         </form>
     </div>
     </div>
 </body>
+<script type="text/javascript" src="translate.js"></script>
 
 </html>
