@@ -1,11 +1,11 @@
 const plist_format_pre =
     '<?xml version = "1.0" encoding = "UTF-8" ?>' + '\n' +
     '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">' + "\n" +
-    '<plist version="1.0">' + "\n" +
-    '<array>' + "\n";
+    '<plist version="1.0">' + '\n' +
+    '<array>' + '\n';
 const plist_format_pos =
-    "</array>" + "\n" +
-    "</plist>";
+    '</array>' + '\n' +
+    '</plist>';
 
 const INPUT_FORM_POS = 0;
 const OUTPUT_FORM_POS = 5;
@@ -108,10 +108,10 @@ function Export() {
     var IME2MAC_sw = document.translate_form[1].checked;
     var MAC2IME_sw = document.translate_form[2].checked;
     if (IME2MAC_sw) {
-        var blob = new Blob(["\uFFFF", output_form.value]);
+        var blob = new Blob([output_form.value], { type: 'text/plain' });
         var fileName = "output.plist";
     } else if (MAC2IME_sw) {
-        var blob = new Blob(["\uFFFF", output_form.value]);
+        var blob = new Blob([output_form.value], { type: 'text/plain' });
         var fileName = "output.txt";
     } else {
         alert("please select translate section");
